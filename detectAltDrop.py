@@ -1,3 +1,13 @@
+# detectAltDrop.py
+# usage:
+# python detectAltDrop.py [-show]
+# -show : will display a chart showing all example data and an 
+#         indication of where this the decreasing trend was detected
+#   
+# example of recognizing a downward trend when sensor readings 
+# have noise. also includes the generation of fake altimeter data.
+
+import math
 from random import uniform
 import threading
 import time
@@ -8,7 +18,7 @@ from collections import deque
 def main():
     alt = Altimeter()
     alt.start()
-    
+
     SIZE = 10
     recentq = deque([], maxlen=SIZE)
     oldq = deque([], maxlen=SIZE)
@@ -29,10 +39,13 @@ def main():
             if sum_recent < sum_old:
                 break
         time.sleep(uniform(0.005,0.015))
+    #add the flag -show to show plot
     if len(argv) > 1 and argv[1] == "-show":
         length = len(alt.vals)
         plt.plot([i for i in range(index)],alt.vals[:index], "bo")
         plt.plot([i for i in range(index,length)],alt.vals[index:], "ro")
+        plt.axvline(x=index, linewidth=2, color='k')
+        plt.axhline(y=alt.vals[index], linewidth=2, color='k')
         plt.show()
 
 
