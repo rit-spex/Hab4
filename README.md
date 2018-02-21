@@ -19,3 +19,6 @@ This repository is for the scientific high-altitude balloon (HAB) board which wi
 ###### Contributors
 
 - Thomas Hall
+- Evan Putnam
+- Austin Bozdas
+- Thomas "TJ" Tarazevits
