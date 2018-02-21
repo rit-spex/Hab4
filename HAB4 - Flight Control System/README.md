@@ -8,3 +8,4 @@ This repository is for the flight control software on the 4th RIT Space Explorat
 
 - Thomas Hall
 - Austin Bozdas
+- Thomas "TJ" Tarazevits
