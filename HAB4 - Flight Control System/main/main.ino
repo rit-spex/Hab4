@@ -31,8 +31,6 @@
 #define LSM9DS1_M	 0x1C
 #define LSM9DS1_AG 0x6A
 
-
-
 File log_file;
 BME280 bme280;
 BME280 ball280;
