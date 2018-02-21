@@ -1,4 +1,7 @@
 # HAB4
+
+###### Overview
+
 This repository is for the scientific high-altitude balloon (HAB) board which will serve as a learning experience for new RIT SPEX members by providing:
 
    -Programming experience through an Arduino-compatible microcontroller
@@ -12,3 +15,7 @@ This repository is for the scientific high-altitude balloon (HAB) board which wi
    -The public relations opportunity that comes along with a video.
  
    -Individuals working on this project will be able to apply what they learn in the classroom towards a physical project that represents one of the cheapest and easiest forms of basic space exploration.
+
+###### Contributors
+
+- Thomas Hall
