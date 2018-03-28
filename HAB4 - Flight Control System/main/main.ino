@@ -27,6 +27,10 @@
 // TODO confirm format of declination
 #define DECL       -11.44 // 11.44 degrees West
 
+// max height and fall drop forgiveness for CubeSat
+#define DEPLOY_HEIGHT 25000.0
+#define FALL_DROP 2000.0
+
 // LSM9DS1 I2C
 #define LSM9DS1_M	 0x1C
 #define LSM9DS1_AG 0x6A
@@ -45,6 +49,8 @@ uint8_t packet_count = 0;
 uint8_t max_packet_count = 10;
 uint8_t precision = 7;
 String stringBuffer = "";
+float max_height = 1000.0;
+boolean payloadReleased = false;
 
 // We should have a toggle for debugging through serial vs flight mode
 // Right now the setup() --> Init() is kinda pointless
@@ -206,6 +212,19 @@ void poll_bme280() {
   buffer_float(humidity);
   */
 
+  // nicrome calcualation for CubeSat
+  if(!payloadReleased){
+    // update the max height
+    if(max_height > alt_m){
+      max_height = alt_m;
+    }
+
+    // deployment method for cubesat pannels
+    if(alt_m > DEPLOY_HEIGHT || alt_m > max_height + FALL_DROP){
+  	  deployPayload;
+    }
+  }
+
   //string based buffer for writing csv file
   stringBuffer += String(temp_c, precision);
   stringBuffer += ',';
@@ -306,6 +325,13 @@ void write_string_buffer() {
     packet_count = 0;
     stringBuffer = "";
   }
+}
+
+//triggers the external payload deployment switch
+void deployPayload() {
+      digitalWrite(RELAY_2, HIGH); // Nichrome wire deploys cubesat solar panels
+      Serial.println("relay raised HIGH");
+      payloadReleased = true;
 }
 
 
