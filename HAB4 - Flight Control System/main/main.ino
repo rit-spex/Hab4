@@ -1,7 +1,7 @@
 ///////////////////////
 /// RIT SPEX HABIV
 /// Main Flight Software
-/// November 18th, 2017
+/// April 28th, 2018
 ///
 /// Austin Bodzas
 /// Thomas Hall
@@ -22,6 +22,9 @@
 #define BUFF_SIZE  480  // TODO tailor to packet size
 #define PACK_LIM   8
 #define CS_0       10   // CS0 pin for SPI
+
+#define cubeSatPin todo       // cubesat pin, will be held high to trigger
+#define arduinoPowerPin todo  // pin that powers the arduino nano  
 
 // Magnetic field declination, RIT Nov, 21, 2016
 // TODO confirm format of declination
@@ -86,6 +89,11 @@ void loop() {
 
 // Initializes sensors and opens file for IO
 void init() {
+  pinMode(cubeSatPin, INPUT);          // set pin to input
+  digitalWrite(cubeSatPin, LOW);       // turn on pullup resistors
+  pinMode(arduinoNanoPin, INPUT);      // set pin to input
+  digitalWrite(arduinoPowerPin, HIGH); // turn on pullup resistors
+  
   //////////////////////////////////////
   // Setup SD Card
   // Serial.print("Initialization: ");
@@ -329,7 +337,7 @@ void write_string_buffer() {
 
 //triggers the external payload deployment switch
 void deployPayload() {
-      digitalWrite(RELAY_2, HIGH); // Nichrome wire deploys cubesat solar panels
+      digitalWrite(cubeSatPin, HIGH); // Nichrome wire deploys cubesat solar panels
       Serial.println("relay raised HIGH");
       payloadReleased = true;
 }
