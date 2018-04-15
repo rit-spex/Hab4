@@ -24,7 +24,6 @@
 #define CS_0       10   // CS0 pin for SPI
 
 #define cubeSatPin todo       // cubesat pin, will be held high to trigger
-#define arduinoPowerPin todo  // pin that powers the arduino nano  
 
 // Magnetic field declination, RIT Nov, 21, 2016
 // TODO confirm format of declination
@@ -91,8 +90,6 @@ void loop() {
 void init() {
   pinMode(cubeSatPin, INPUT);          // set pin to input
   digitalWrite(cubeSatPin, LOW);       // turn on pullup resistors
-  pinMode(arduinoNanoPin, INPUT);      // set pin to input
-  digitalWrite(arduinoPowerPin, HIGH); // turn on pullup resistors
   
   //////////////////////////////////////
   // Setup SD Card

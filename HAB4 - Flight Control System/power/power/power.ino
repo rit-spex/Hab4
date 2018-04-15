@@ -1,39 +1,43 @@
-#define voltageThreshold 724
-#define numConsecReads 10
+///////////////////////
+/// RIT SPEX HABIV
+/// Power Delivery Board Software
+/// April 28th, 2018
+///
+/// Thomas Hall
+/// Daniel Mitchel
+////////////////////////
 
-int analogIn = A0;    // select the input pin for the potentiometer
-int fetControl = 13;      // select the pin for the LED
-int value = 0;  // variable to store the value coming from the sensor
-int numBelow = 0;
-boolean triggered = false;
+#define voltageThreshold 724  // data member for 3.54 V
+#define numConsecReads 10     // number of consecutive low reads to shut off the battery
+
+int analogIn = A0;            // the input pin for the power 
+int fetControl = 13;          // the pin for the fetControl
+int value = 0;                // variable to store the current power reading
+int numBelow = 0;             // number of reading that have been below (in a row)
+boolean triggered = false;    // variable to see wether we have triggered the fetControl
 
 void setup() {
-  // put your setup code here, to run once:
-
   Serial.begin(9600);             // set up serial for debugging purposses
-  pinMode(fetControl, OUTPUT); 
-
+  pinMode(fetControl, OUTPUT);    // set the output for the fetControl
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop() { 
 
-  // read a0 , conver to analog with map, based on the schematic numbers, turn d13 digital on or off
-  // if a0 is too low turn d13 off
-
-  // to activate cubesat, toggle (with matt's board) ptc10 HIGH to deploy cubesat LOW to turn it off
-  // cutdown is PTC 8
-  
+  // read the value in 
   value = analogRead(analogIn);
-  //float corrected = map(value,0,1023,0.0,5.0);
 
+  // print it for debugging purposses
   Serial.print("Value: ");
   Serial.println(value);
-  
+
+  // do the fetControl calculation
   if(!triggered){
+
+    // the value is below the threshold
     if(value < voltageThreshold){
       Serial.print("Value is below voltage threshhold!\n");
       numBelow++;
+      // if we have surpassed the number of low consectuive low reads we hold the fetControl pin high
       if(numBelow == numConsecReads){
         digitalWrite(fetControl, LOW);
         triggered = true;
