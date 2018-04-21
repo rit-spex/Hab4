@@ -28,7 +28,7 @@
 
 // Magnetic field declination, RIT Nov, 21, 2016
 // TODO confirm format of declination
-#define DECL       -11.44 // 11.44 degrees West
+#define DECL       11.44 // 11.44 degrees West
 
 // max height and fall drop forgiveness for CubeSat
 #define DEPLOY_HEIGHT 25000.0
@@ -52,7 +52,7 @@ uint8_t packet_count = 0;
 uint8_t max_packet_count = 10;
 uint8_t precision = 7;
 String stringBuffer = "";
-float max_height = 1000.0;
+float max_height = 5000.0;
 boolean payloadReleased = false;
 
 // We should have a toggle for debugging through serial vs flight mode
@@ -90,8 +90,8 @@ void loop() {
 
 // Initializes sensors and opens file for IO
 void init() {
-  pinMode(cubeSatPin, INPUT);          // set pin to input
-  pinMode(cutDownPin, INPUT);          // set pin to input
+  pinMode(cubeSatPin, OUTPUT);          // set pin to output
+  pinMode(cutDownPin, OUTPUT);          // set pin to output
   digitalWrite(cubeSatPin, LOW);       // turn on pullup resistors
   digitalWrite(cutDownPin, LOW);       // turn on pullup resistors
   
@@ -219,28 +219,10 @@ void poll_bme280() {
   buffer_float(pressure);
   buffer_float(alt_m);
   buffer_float(humidity);
-  */
+  */ 
 
-  // nicrome calcualation for CubeSat
-  if(!payloadReleased){
-    // update the max height
-    if(max_height > alt_m){
-      max_height = alt_m;
-    }
-
-    // deployment method for cubesat pannels
-    if(alt_m > DEPLOY_HEIGHT || alt_m > max_height + FALL_DROP){
-  	  deployPayload();
-    }
-  }
-
-  // cutdown calculation for Balloon
-  if(alt_m > 40000){
-    digitalWrite(cutDownPin, HIGH); // Nichrome wire deploys cubesat solar panels
-    Serial.println("cutdown");
-    delay(5000);
-    digitalWrite(cutDownPin, LOW); // Nichrome wire deploys cubesat solar panels
-  }
+  Serial.println(alt_m);
+  pinCalculation(alt_m);
 
   //string based buffer for writing csv file
   stringBuffer += String(temp_c, precision);
@@ -344,6 +326,35 @@ void write_string_buffer() {
   }
 }
 
+// method to the calculation of the pins (cubesat deployment and cutdown)
+void pinCalculation(float alt_m){
+  
+  // nicrome calcualation for CubeSat
+  if(!payloadReleased){
+    // update the max height
+    if(max_height > alt_m){
+      max_height = alt_m;
+    }
+
+    // deployment method for cubesat pannels
+    if(alt_m > DEPLOY_HEIGHT || alt_m > max_height + FALL_DROP){
+      deployPayload();
+    }
+  }
+
+  Serial.println(alt_m); 
+  
+  // cutdown calculation for Balloon
+  if(alt_m > 40000.0){
+    digitalWrite(cutDownPin, HIGH); // Nichrome wire deploys cubesat solar panels
+    Serial.println("cutdown relay HIGH");
+    delay(5000);
+    digitalWrite(cutDownPin, LOW); // Nichrome wire deploys cubesat solar panels
+    Serial.println("cutdown relay LOW");
+    delay(5000);
+  }
+}
+
 //triggers the external payload deployment switch
 void deployPayload() {
       digitalWrite(cubeSatPin, HIGH); // Nichrome wire deploys cubesat solar panels
@@ -351,6 +362,8 @@ void deployPayload() {
       payloadReleased = true;
       delay(5000);
       digitalWrite(cubeSatPin, LOW); // Nichrome wire deploys cubesat solar panels
+      Serial.println("relay raised LOW");
+      delay(5000);
 }
 
 

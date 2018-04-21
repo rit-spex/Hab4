@@ -1,5 +1,5 @@
   // read a0 , conver to analog with map, based on the schematic numbers, turn d13 digital on or off
   // if a0 is too low turn d13 off
 
-  // to activate cubesat, toggle (with matt's board) ptc10 HIGH to deploy cubesat LOW to turn it off
-  // cutdown is PTC 8
+  // to activate cubesat, toggle (with matt's board) ptc10 (29) HIGH to deploy cubesat LOW to turn it off
+  // cutdown is PTC 8 (27)
