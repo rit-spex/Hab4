@@ -23,7 +23,8 @@
 #define PACK_LIM   8
 #define CS_0       10   // CS0 pin for SPI
 
-#define cubeSatPin todo       // cubesat pin, will be held high to trigger
+#define cubeSatPin 29       // cubesat pin, will be held high to trigger
+#define cutDownPin 27       // cutdown pin for balloon
 
 // Magnetic field declination, RIT Nov, 21, 2016
 // TODO confirm format of declination
@@ -84,12 +85,15 @@ void loop() {
     poll_sensors();
     poll_elapsed = 0;
   }
+  delay(100);
 }
 
 // Initializes sensors and opens file for IO
 void init() {
   pinMode(cubeSatPin, INPUT);          // set pin to input
+  pinMode(cutDownPin, INPUT);          // set pin to input
   digitalWrite(cubeSatPin, LOW);       // turn on pullup resistors
+  digitalWrite(cutDownPin, LOW);       // turn on pullup resistors
   
   //////////////////////////////////////
   // Setup SD Card
@@ -226,8 +230,16 @@ void poll_bme280() {
 
     // deployment method for cubesat pannels
     if(alt_m > DEPLOY_HEIGHT || alt_m > max_height + FALL_DROP){
-  	  deployPayload;
+  	  deployPayload();
     }
+  }
+
+  // cutdown calculation for Balloon
+  if(alt_m > 40000){
+    digitalWrite(cutDownPin, HIGH); // Nichrome wire deploys cubesat solar panels
+    Serial.println("cutdown");
+    delay(5000);
+    digitalWrite(cutDownPin, LOW); // Nichrome wire deploys cubesat solar panels
   }
 
   //string based buffer for writing csv file
@@ -337,6 +349,8 @@ void deployPayload() {
       digitalWrite(cubeSatPin, HIGH); // Nichrome wire deploys cubesat solar panels
       Serial.println("relay raised HIGH");
       payloadReleased = true;
+      delay(5000);
+      digitalWrite(cubeSatPin, LOW); // Nichrome wire deploys cubesat solar panels
 }
 
 
