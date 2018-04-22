@@ -23,3 +23,4 @@ This repository is for the scientific high-altitude balloon (HAB) board which wi
 - Austin Bozdas
 - Thomas "TJ" Tarazevits
 - Alec Herbert
+- Daniel Mitchell
