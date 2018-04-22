@@ -74,7 +74,7 @@ float max_height = 0;
 //--------------------------------------SETUP--------------------------------------
 void setup() {
   Serial.begin(B_RATE); //Begin Serial comms w/ PC
-  while (!Serial) {}
+  delay(1000);  //Delay for a second - Give time for serial to come up
   Serial.println("Serial Initialized"); Serial.println();
   init(); //Call the initialization function
 }
@@ -334,9 +334,11 @@ void poll_bme280() {
   }
 
   if(!cutDown){
-    if(millis() >= 10800000 && alt_m >= CUTDOWN_HEIGHT){
-      balloonCutdown();
-      cutDown = true;
+    if(millis() >= 10800000){
+      if(alt_m >= CUTDOWN_HEIGHT){
+        balloonCutdown();
+      }
+      cutDown = true; //Set this even if cutDown doesn't occur so that the altitute check after 3 hrs only happens once
     }
   }
 
